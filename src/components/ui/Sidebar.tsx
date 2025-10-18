@@ -1,6 +1,6 @@
 import { tv } from "tailwind-variants";
 import { cn } from "../../lib/utils";
-import { Home, BarChart3, Settings, Play } from "lucide-react";
+import { Home, BarChart3, Settings, Play, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const sidebar = tv({
@@ -28,13 +28,18 @@ export default function Sidebar() {
     { label: "Settings", path: "/settings", icon: Settings },
   ];
 
+  const user = {
+    name: "User1",
+  };
+
   return (
     <aside className={cn(sidebar())}>
       {/* Header: ユーザ情報 */}
-      <div className="px-6 py-4">
-        <h1 className="text-3xl fond-blod text-blue-600 tracking-tight">
-          Go Monitor
-        </h1>
+      <div className="flex gap-3 space-y-10 bg-white">
+        <div className="rounded-full bg-gray-300">
+          <User className="w-6 h-6 text-gray-600" />
+        </div>
+        <div className="text-gray-600">{user.name}</div>
       </div>
 
       {/* ナビゲーションリスト */}

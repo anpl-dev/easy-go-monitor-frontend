@@ -24,7 +24,7 @@ export default function Runner() {
       main={
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Monitor Runner</h2>
+            <h2 className="text-xl font-semibold">Runner</h2>
             <Button
               intent={running ? "danger" : "primary"}
               onClick={handleRun}
