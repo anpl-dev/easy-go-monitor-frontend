@@ -20,7 +20,7 @@ export default function Runner() {
   return (
     <DashboardLayout
       sidebar={<Sidebar />}
-      header={<Header title="Runner" />}
+      header={<Header title="Runners" />}
       main={
         <div className="space-y-6">
           <div className="flex justify-between items-center">
