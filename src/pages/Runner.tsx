@@ -1,4 +1,4 @@
-import DashboardLayout from "../components/layout/DashboardLayout";
+import DashboardLayout from "../components/layout/DefaultLayout";
 import Sidebar from "../components/ui/Sidebar";
 import { Header } from "../components/ui/Header";
 import { Button } from "../components/ui/Button";
@@ -19,7 +19,7 @@ export default function Runner() {
 
   return (
     <DashboardLayout
-      sidebar={<Sidebar active="/runner" />}
+      sidebar={<Sidebar />}
       header={<Header title="Runner" />}
       main={
         <div className="space-y-6">
