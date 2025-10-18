@@ -29,7 +29,7 @@ export default function Sidebar() {
   ];
 
   const user = {
-    name: "User1",
+    name: "name",
   };
 
   return (

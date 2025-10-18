@@ -4,10 +4,16 @@ import Dashboard from "./pages/Dashboard";
 import type { JSX } from "react";
 import Runner from "./pages/Runner";
 import Monitor from "./pages/Monitor";
+import { useUser } from "./hooks/useUser";
+import { UserProvider } from "./context/UserProvider";
 
-function ProtectedRoute({ children }: { children: JSX.Element }) {
-  const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="login" />;
+export function ProtectedRoute({ children }: { children: JSX.Element }) {
+  const { user, loading } = useUser();
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) return <Navigate to="/" replace />;
+
+  return children;
 }
 
 export default function App() {
@@ -18,45 +24,54 @@ export default function App() {
         <Route path="/" element={<Login />} />
 
         {/* 認証が必要なページ */}
-        {/* (デフォルト) ダッシュボードページ */}
         <Route
-          path="/dashboard"
+          path="/*"
           element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
+            <UserProvider>
+              <Routes>
+                {/* (デフォルト) ダッシュボードページ */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* モニターページ */}
+                <Route
+                  path="/monitors"
+                  element={
+                    <ProtectedRoute>
+                      <Monitor />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* ランナーページ */}
+                <Route
+                  path="/runners"
+                  element={
+                    <ProtectedRoute>
+                      <Runner />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* 設定ページ */}
+                {/* <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Setting />
+                    </ProtectedRoute>
+                  }
+                /> */}
+              </Routes>
+            </UserProvider>
           }
         />
-
-        {/* モニターページ */}
-        <Route
-          path="/monitors"
-          element={
-            <ProtectedRoute>
-              <Monitor />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* ランナーページ */}
-        <Route
-          path="/runners"
-          element={
-            <ProtectedRoute>
-              <Runner />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* 設定ページ */}
-        {/* <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <Setting />
-            </ProtectedRoute>
-          }
-        /> */}
       </Routes>
     </BrowserRouter>
   );
