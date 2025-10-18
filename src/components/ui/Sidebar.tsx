@@ -1,6 +1,6 @@
 import { tv } from "tailwind-variants";
 import { cn } from "../../lib/utils";
-import { Home, BarChart3, Settings } from "lucide-react";
+import { Home, BarChart3, Settings, Play } from "lucide-react";
 
 const sidebar = tv({
   base: "flex flex-col h-full bg-white border-gray-400",
@@ -27,6 +27,7 @@ export default function Sidebar({ active, onNavigate }: SidebarProps) {
   const navItems = [
     { label: "Dashboard", icon: Home, path: "/dashboard" },
     { label: "Monitors", icon: BarChart3, path: "/monitors" },
+    { label: "Runners", icon: Play, path: "/runners" },
     { label: "Settings", icon: Settings, path: "/settings" },
   ];
 

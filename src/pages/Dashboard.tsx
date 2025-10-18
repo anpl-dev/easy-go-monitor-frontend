@@ -1,7 +1,7 @@
-import DashboardLayout from "../layout/DashboardLayout";
-import { Button } from "../ui/Button";
-import { Header } from "../ui/Header";
-import Sidebar from "../ui/Sidebar";
+import DashboardLayout from "../components/layout/DashboardLayout";
+import { Button } from "../components/ui/Button";
+import { Header } from "../components/ui/Header";
+import Sidebar from "../components/ui/Sidebar";
 
 export default function Dashboard() {
   return (
