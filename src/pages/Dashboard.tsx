@@ -10,8 +10,8 @@ export default function Dashboard() {
       main={
         <div className="space-y-4">
           {/* アラート情報 */}
+          <h2 className="text-xl font-semibold">アラート情報</h2>
           <div className="bg-white p-6 rounded-md border border-gray-300">
-            <h2 className="text-lg font-semibold mb-2 text-gray-800">Alert</h2>
             <p className="text-gray-600">
               現在アクティブなアラートはありません。
             </p>
