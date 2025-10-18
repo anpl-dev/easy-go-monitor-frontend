@@ -1,79 +1,64 @@
-import { useEffect, useState } from "react";
-import { Button } from "./Button";
-import { jwtDecode } from "jwt-decode";
+import { tv } from "tailwind-variants";
+import { cn } from "../../lib/utils";
+import { Home, BarChart3, Settings } from "lucide-react";
 
-type JwtPayload = {
-  user_id: string;
+const sidebar = tv({
+  base: "flex flex-col h-full bg-white border-gray-400",
+});
+
+const navItem = tv({
+  base: "flex items-center gap-3 px-4 py-2 rounded-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer",
+  variants: {
+    active: {
+      true: "bg-blue-100 text-blue-100 font-medium",
+    },
+  },
+  defaultVariants: {
+    active: false,
+  },
+});
+
+type SidebarProps = {
+  active?: string;
+  onNavigate?: (path: string) => void;
 };
 
-type Monitor = {
-  id: string;
-  name: string;
-  url: string;
-  interval_second: number;
-};
-
-export default function Sidebar() {
-  const [monitors, setMonitors] = useState<Monitor[]>([]);
-  const [loading, setLoding] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("ログイン情報がありません");
-      return;
-    }
-
-    let userId = "";
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
-      userId = decoded.user_id;
-    } catch {
-      setError("トークンが不正です");
-      return;
-    }
-
-    //モニター一覧取得
-    fetch(`http://localhost:8080/api/v1/monitors/search?user_id=${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "取得に失敗しました");
-        setMonitors(data.data || []);
-      })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoding(false));
-  }, []);
-
-  if (loading) return <div className="p-4 text-gray-500">読み込み中...</div>;
-  if (error) return <div className="p-4 text-red-600">{error}</div>;
+export default function Sidebar({ active, onNavigate }: SidebarProps) {
+  const navItems = [
+    { label: "Dashboard", icon: Home, path: "/dashboard" },
+    { label: "Monitors", icon: BarChart3, path: "/monitors" },
+    { label: "Settings", icon: Settings, path: "/settings" },
+  ];
 
   return (
-    <aside className="bg-white border-r p-4 flex flex-col">
-      <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold mb-4">Test Monitors</h2>
-        <div className="flex gap-2 mb-6">
-          <Button intent="primary" size="sm">
-            追加
-          </Button>
-          <Button intent="secondary" size="sm">
-            設定
-          </Button>
-        </div>
+    <aside className={cn(sidebar())}>
+      {/* Header: ロゴ部分 */}
+      <div className="px-6 py-4 border-b border-gray-100">
+        <h1 className="text-lg fond-blod text-blue-600 tracking-tight">
+          Go Monitor
+        </h1>
+      </div>
 
-        <div className="flex-1 overflow-y-auto space-y-2">
-          {monitors.map((m) => (
+      {/* ナビゲーションリスト */}
+      <nav className="flex-1 p-4 space-y-1">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
             <div
-              key={m.id}
-              className="p-2 rounded hover:bg-gray-100 cursor-pointer transition"
+              key={item.label}
+              className={cn(navItem({ active: active === item.path }))}
+              onClick={() => onNavigate?.(item.path)}
             >
-              <p className="font-medium text-gray-800">{m.name}</p>
-              <p className="text-sm text-gray-500 trancate">{m.url}</p>
+              <Icon size={18} />
+              <span>{item.label}</span>
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </nav>
+
+      {/* Footer: ユーザー情報 */}
+      <div className="border-t border-gray-100 px-4 py-3 text-sm text-gray-500 ">
+        v1.0.0
       </div>
     </aside>
   );
