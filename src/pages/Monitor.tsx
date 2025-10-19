@@ -216,7 +216,7 @@ export default function Monitor() {
                 <label className={cn(label())}>モニター名</label>
                 <input
                   type="text"
-                  placeholder="new monitor"
+                  placeholder="New Monitor"
                   className={cn(monitorInput())}
                   value={newMonitor.name}
                   onChange={(e) => {
