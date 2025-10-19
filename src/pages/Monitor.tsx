@@ -4,6 +4,7 @@ import Sidebar from "../components/ui/Sidebar";
 import { Header } from "../components/ui/Header";
 import { Button } from "../components/ui/Button";
 import { jwtDecode } from "jwt-decode";
+import { API_ENDPOINTS } from "../constants/api";
 
 type Monitor = {
   id: string;
@@ -24,13 +25,13 @@ export default function Monitor() {
     const decoded = jwtDecode<{ user_id: string }>(token);
     const userID = decoded.user_id;
 
-    fetch(`http://localhost:8080/api/v1/monitors/search?user_id=${userID}`, {
+    fetch(`${API_ENDPOINTS.MONITORS}/search?user_id=${userID}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {
         const data = await res.json();
         if (!res.ok)
-          throw new Error(data.message || "モニター取得に失敗しました。");
+          throw new Error(data.message || "Failed to fetching monitors");
         setMonitors(data.data || []);
       })
       .catch((err) => setError(err.message))

@@ -1,79 +1,108 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../constants/api";
+import { tv } from "tailwind-variants";
+import { cn } from "../lib/utils";
+import { Button } from "../components/ui/Button";
+import { useState } from "react";
+import { CircleAlert } from "lucide-react";
+
+const label = tv({
+  base: "font-bold block text-md text-gray-600 mb-1",
+});
+
+const form = tv({
+  base: "w-full p-2 rounded-md focus:ring-2 focus:ring-blue-400 outline-none border border-gray800 text-gray-500",
+});
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
+    setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8080/api/v1/login", {
+      const res = await fetch(API_ENDPOINTS.LOGIN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem("token", data.data?.token || data.token);
-        setMessage("✅ ログイン成功!");
-        setTimeout(() => navigate("/dashboard"), 1000);
-      } else {
-        setMessage(`❌ ログイン失敗: ${data.error || data.message}`);
+      const jsonData = await res.json();
+
+      if (!res.ok) {
+        throw new Error(jsonData.error || jsonData.message || "Login Failed");
       }
+
+      localStorage.setItem("token", jsonData.data.token);
+
+      // ダッシュボードへ遷移
+      navigate("/dashboard");
     } catch (err) {
-      console.error(err);
-      setMessage("⚠️ サーバーに接続できません");
+      if (err instanceof Error) {
+        setMessage(err.message);
+      } else {
+        setMessage("Failed to connecting server...");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      <h1 className="text-3xl font-bold text-blue-600 mb-8">Go Monitor Tool</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 w-80"
-      >
-        {/* Email */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          />
+    <div className="min-h-screen flex items-start justify-center">
+      <div className="rounded-lg p-5 w-full max-w-md pt-50">
+        <h1 className="text-4xl font-bold text-center text-blue-600 mb-10">
+          Easy Go Monitor
+        </h1>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className={cn(label())}>メールアドレス</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={cn(form())}
+              placeholder="example@email.com"
+              required
+            />
+          </div>
+
+          <div>
+            <label className={cn(label())}>パスワード</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={cn(form())}
+              placeholder="passowrd"
+              required
+            />
+          </div>
+          <Button
+            intent="primary"
+            type="submit"
+            className="w-full mt-2"
+            disabled={loading}
+          >
+            {loading ? "ログイン中..." : "ログイン"}
+          </Button>
+        </form>
+        <div className="h-10 mt-10">
+          {message && (
+            <div className="flex items-center gap-2 rounded-lg bg-red-100 p-4">
+              <CircleAlert className="w-5 h-5 text-red-700" />
+              <p className="text-gray-700 text-center">{message}</p>
+            </div>
+          )}
         </div>
-
-        {/* Password */}
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full"
-        >
-          ログイン
-        </button>
-
-        {message && (
-          <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
-        )}
-      </form>
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { tv } from "tailwind-variants";
 import { cn } from "../../lib/utils";
 import { Home, BarChart3, Settings, Play, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useUser } from "../../hooks/useUser";
 
 const sidebar = tv({
   base: "flex flex-col h-full",
@@ -28,18 +29,21 @@ export default function Sidebar() {
     { label: "Settings", path: "/settings", icon: Settings },
   ];
 
-  const user = {
-    name: "name",
-  };
+  const { user } = useUser();
+  if (!user) return "unknown name";
 
   return (
     <aside className={cn(sidebar())}>
       {/* Header: ユーザ情報 */}
-      <div className="flex gap-3 space-y-10 bg-white">
-        <div className="rounded-full bg-gray-300">
-          <User className="w-6 h-6 text-gray-600" />
+      <div className="w-full flex items-center mb-10">
+        <div className="flex gap-3 space-y-10">
+          <div className="rounded-full border bg-gray-200">
+            <User className="w-7 h-7 text-gray-600" />
+          </div>
+          <div className="w-7 h-7 text-gray-600 text-xl font-semibold">
+            {user.name}
+          </div>
         </div>
-        <div className="text-gray-600">{user.name}</div>
       </div>
 
       {/* ナビゲーションリスト */}

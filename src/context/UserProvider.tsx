@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { UserContext, type UserContextType } from "./UserContext";
+import { API_ENDPOINTS } from "../constants/api";
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserContextType["user"]>(null);
@@ -19,7 +20,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       const decoded = jwtDecode<{ user_id: string }>(token);
       if (!decoded.user_id) throw new Error("Invalid token payload");
 
-      fetch(`http://localhost:8080/api/v1/users/${decoded.user_id}`, {
+      fetch(`${API_ENDPOINTS.USERS}/${decoded.user_id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(async (res) => {
