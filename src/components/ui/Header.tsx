@@ -2,26 +2,25 @@ import { tv } from "tailwind-variants";
 import { cn } from "../../lib/utils";
 
 const header = tv({
-  base: "w-full bg-white border-b border-gray-200 px-6 py-4",
+  base: "flex items-center justify-between px-8 py-4 bg-white border-b border-gray-300",
 });
 
 type HeaderProps = {
   title?: string;
-  action?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
-export function Header({ title, action }: HeaderProps) {
+export function Header({ title, children }: HeaderProps) {
   return (
     <header className={cn(header())}>
-      <div className="flex items-center justify-between">
-        {/* 左側: ページタイトル */}
-        <div className="flex flex-col leading-tight">
-          <h1 className="text-sm text-blue-600 font-semibold tracking-wide">Easy Go Monitor</h1>
-          <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
-        </div>
-        {/* 右側: アクションボタン */}
-        {action && <div className="flex items-center gap-3 ml-6">{action}</div>}
+      {/* 左側: タイトル */}
+      <div className="flex-shrink-0">
+        <h1 className="text-blue-600 font-bold text-lg leading-tight mb-2">Easy Go Monitor</h1>
+        <h2 className="text-2xl font-semibold text-gray-800 leading-tight">{title}</h2>
       </div>
+
+      {/* 右側: 操作コンテンツ */}
+      <div className="flex items-center gap-4">{children}</div>
     </header>
   );
 }

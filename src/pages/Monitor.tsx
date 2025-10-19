@@ -8,6 +8,7 @@ import { useUser } from "../hooks/useUser";
 import { tv } from "tailwind-variants";
 import { Modal } from "../components/ui/Modal";
 import { cn } from "../lib/utils";
+import { Search } from "lucide-react";
 import { toast } from "sonner";
 
 type Monitor = {
@@ -29,6 +30,14 @@ const label = tv({
 
 const input = tv({
   base: "border p-2 w-full rounded focus:ring-2 focus:ring-blue-400 focus:outline-none",
+});
+
+const searchLabel = tv({
+  base: "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 cursor-text peer-focus:text-gray-500 transition-colors",
+});
+
+const searchInput = tv({
+  base: "peer pl-10 pr-3 py-2 w-full bg-gray-100 border border-gray-400 rounded-md focus:bg-white focus:ring-blue-400 text-gray-800 focus:outline-none",
 });
 
 export default function Monitor() {
@@ -196,14 +205,25 @@ export default function Monitor() {
     <DefaultLayout
       sidebar={<Sidebar />}
       header={
-        <Header
-          title="Monitors"
-          action={
-            <Button intent="primary" onClick={() => setOpen(true)}>
-              + 新規追加
-            </Button>
-          }
-        />
+        <Header title="Monitors">
+          {/* 検索ボックス */}
+          <div className="relative w-72">
+            <input
+              type="search"
+              id="search"
+              placeholder="検索"
+              className={cn(searchInput())}
+              onChange={(e) => console.log("検索:", e.target.value)}
+            />
+            <label htmlFor="search" className={cn(searchLabel())}>
+              <Search className="w-5 h-5" />
+            </label>
+          </div>
+          {/* 追加ボタン */}
+          <Button intent="primary" onClick={() => setOpen(true)}>
+            + 新規追加
+          </Button>
+        </Header>
       }
       main={
         <div className="space-y-6">
@@ -216,7 +236,7 @@ export default function Monitor() {
                 <label className={cn(label())}>モニター名</label>
                 <input
                   type="text"
-                  placeholder="New Monitor"
+                  placeholder="new monitor"
                   className={cn(monitorInput())}
                   value={newMonitor.name}
                   onChange={(e) => {

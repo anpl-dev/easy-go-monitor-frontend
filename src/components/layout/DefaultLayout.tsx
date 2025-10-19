@@ -12,7 +12,7 @@ export default function DefaultLayout({
   main,
 }: DefaultLayoutProps) {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen">
       {/* サイドバー */}
       <aside className="sticky top-0 h-screen w-64 bg-white border-r border-gray-300 p-4 flex-shrink-0 overflow-y-auto">
         {sidebar}
@@ -26,7 +26,7 @@ export default function DefaultLayout({
         </header>
 
         {/* メインコンテンツ */}
-        <main className="flex-1 overflow-y-auto p-8">{main}</main>
+        <main className="flex-1 overflow-y-auto p-8 bg-gray-50">{main}</main>
       </div>
     </div>
   );
