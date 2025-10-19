@@ -6,6 +6,7 @@ import Runner from "./pages/Runner";
 import Monitor from "./pages/Monitor";
 import { useUser } from "./hooks/useUser";
 import { UserProvider } from "./context/UserProvider";
+import { Toaster } from "sonner";
 
 export function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { user, loading } = useUser();
@@ -18,49 +19,50 @@ export function ProtectedRoute({ children }: { children: JSX.Element }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* ログインページ */}
-        <Route path="/" element={<Login />} />
+    <>
+      <BrowserRouter>
+        <Routes>
+          {/* ログインページ */}
+          <Route path="/" element={<Login />} />
 
-        {/* 認証が必要なページ */}
-        <Route
-          path="/*"
-          element={
-            <UserProvider>
-              <Routes>
-                {/* (デフォルト) ダッシュボードページ */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
+          {/* 認証が必要なページ */}
+          <Route
+            path="/*"
+            element={
+              <UserProvider>
+                <Routes>
+                  {/* (デフォルト) ダッシュボードページ */}
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* モニターページ */}
-                <Route
-                  path="/monitors"
-                  element={
-                    <ProtectedRoute>
-                      <Monitor />
-                    </ProtectedRoute>
-                  }
-                />
+                  {/* モニターページ */}
+                  <Route
+                    path="/monitors"
+                    element={
+                      <ProtectedRoute>
+                        <Monitor />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* ランナーページ */}
-                <Route
-                  path="/runners"
-                  element={
-                    <ProtectedRoute>
-                      <Runner />
-                    </ProtectedRoute>
-                  }
-                />
+                  {/* ランナーページ */}
+                  <Route
+                    path="/runners"
+                    element={
+                      <ProtectedRoute>
+                        <Runner />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* 設定ページ */}
-                {/* <Route
+                  {/* 設定ページ */}
+                  {/* <Route
                   path="/settings"
                   element={
                     <ProtectedRoute>
@@ -68,11 +70,13 @@ export default function App() {
                     </ProtectedRoute>
                   }
                 /> */}
-              </Routes>
-            </UserProvider>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+                </Routes>
+              </UserProvider>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+      <Toaster position="top-right" richColors closeButton duration={3000} />
+    </>
   );
 }

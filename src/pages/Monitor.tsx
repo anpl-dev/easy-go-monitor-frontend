@@ -8,6 +8,7 @@ import { useUser } from "../hooks/useUser";
 import { tv } from "tailwind-variants";
 import { Modal } from "../components/ui/Modal";
 import { cn } from "../lib/utils";
+import { toast } from "sonner";
 
 type Monitor = {
   id: string;
@@ -123,11 +124,10 @@ export default function Monitor() {
         url: "",
         interval_second: 60,
       });
+      toast.success("モニターを作成しました");
     } catch (err) {
-      if (err instanceof TypeError) {
-        setError("Internal Server Erorr");
-      } else if (err instanceof Error) {
-        setError(err.message);
+      if (err instanceof Error) {
+        toast.error("作成中にエラーが発生しました");
       }
     }
   };
@@ -156,12 +156,11 @@ export default function Monitor() {
 
       await fetchMonitors();
 
+      toast.success("モニターを更新しました");
       setEditingMonitorID(null);
     } catch (err) {
-      if (err instanceof TypeError) {
-        setError("Internal Server Erorr");
-      } else if (err instanceof Error) {
-        setError(err.message);
+      if (err instanceof Error) {
+        toast.error("更新中にエラーが発生しました。");
       }
     }
   };
@@ -185,11 +184,10 @@ export default function Monitor() {
       }
 
       await fetchMonitors();
+      toast.success("モニターを削除しました");
     } catch (err) {
-      if (err instanceof TypeError) {
-        setError("Internal Server Erorr");
-      } else if (err instanceof Error) {
-        setError(err.message);
+      if (err instanceof Error) {
+        toast.error("削除中にエラーが発生しました。");
       }
     }
   };
