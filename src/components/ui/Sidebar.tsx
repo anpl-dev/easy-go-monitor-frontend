@@ -1,12 +1,13 @@
 import { tv } from "tailwind-variants";
 import { cn } from "../../lib/utils";
-import { Home, BarChart3, Settings, Play, User } from "lucide-react";
+import { LogOut, Home, BarChart3, Settings, Play, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 import { VERSION } from "../../constants/config";
+import { useState } from "react";
 
 const sidebar = tv({
-  base: "flex flex-col h-full",
+  base: "flex flex-col h-full bg-white relative",
 });
 
 const navItem = tv({
@@ -22,6 +23,14 @@ const navItem = tv({
   },
 });
 
+const userMenu = tv({
+  base: "absolute top-15 w-48 bg-white border border-gray-300 hover:bg-gray-100 rounded-md shadow-lg py-2",
+});
+
+const userButton = tv({
+  base: "flex items-center gap-2 w-full hover:bg-gray-100 rounded-md p-2 transition",
+});
+
 export default function Sidebar() {
   const navItems = [
     { label: "Dashboard", path: "/dashboard", icon: Home },
@@ -29,20 +38,36 @@ export default function Sidebar() {
     { label: "Runners", path: "/runners", icon: Play },
     { label: "Settings", path: "/settings", icon: Settings },
   ];
+  const { user, logout } = useUser();
+  const [open, setOpen] = useState(false);
 
-  const { user } = useUser();
   if (!user) return "unknown name";
 
   return (
     <aside className={cn(sidebar())}>
       {/* Header: ユーザ情報 */}
       <div className="w-full flex items-center mb-8 mt-2">
-        <div className="flex gap-3 space-y-10">
-          <div className="rounded-full border bg-gray-200">
-            <User className="w-7 h-7 text-gray-600" />
+        <button
+          onClick={() => setOpen((prev) => !prev)}
+          className={cn(userButton())}
+        >
+          <User className="flex gap-3 space-y-10 w-7 h-7 text-gray-600" />
+          <span className="text-gray-700 text-lg font-medium">
+            {user?.name}
+          </span>
+        </button>
+
+        {open && (
+          <div className={cn(userMenu())}>
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700"
+            >
+              <LogOut className="w-4 h-4" />
+              ログアウト
+            </button>
           </div>
-          <div className="w-7 h-7 text-gray-600 text-xl">{user.name}</div>
-        </div>
+        )}
       </div>
 
       {/* ナビゲーションリスト */}
