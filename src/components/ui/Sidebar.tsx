@@ -28,7 +28,7 @@ const userMenu = tv({
 });
 
 const userButton = tv({
-  base: "flex items-center gap-2 w-full hover:bg-gray-100 rounded-md p-2 transition",
+  base: "flex items-center gap-3 w-full hover:bg-gray-100 rounded-md p-2 transition",
 });
 
 export default function Sidebar() {
@@ -66,10 +66,11 @@ export default function Sidebar() {
       <div className="w-full flex items-center mb-8 mt-2" ref={menuRef}>
         <button
           onClick={() => setOpen((prev) => !prev)}
-          className={cn(userButton())}
+          className={cn(userButton())
+          }
         >
-          <User className="flex gap-3 space-y-10 w-7 h-7 text-gray-600" />
-          <span className="text-gray-700 text-lg font-medium">
+          <User className="flex rounded-full gap-3 space-y-10 w-7 h-7 bg-gray-300 text-gray-600" />
+          <span className="text-gray-700 text-xl font-medium">
             {user?.name}
           </span>
         </button>

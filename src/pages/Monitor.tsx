@@ -195,21 +195,28 @@ export default function Monitor() {
   return (
     <DefaultLayout
       sidebar={<Sidebar />}
-      header={<Header title="Monitors" />}
+      header={
+        <Header
+          title="Monitors"
+          action={
+            <Button intent="primary" onClick={() => setOpen(true)}>
+              + 新規追加
+            </Button>
+          }
+        />
+      }
       main={
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">登録済みモニター</h2>
-            <Button intent="primary" onClick={() => setOpen(true)}>
-              + 新規追加
-            </Button>
 
             {/* モーダル： 新規モニター追加 */}
             <Modal open={open} title="新規モニター追加">
               <form onSubmit={handleAddMonitor} className="space-y-3">
+                <label className={cn(label())}>モニター名</label>
                 <input
                   type="text"
-                  placeholder="モニター名"
+                  placeholder="new monitor"
                   className={cn(monitorInput())}
                   value={newMonitor.name}
                   onChange={(e) => {
@@ -220,6 +227,7 @@ export default function Monitor() {
                   }}
                   required
                 />
+                <label className={cn(label())}>URL</label>
                 <input
                   type="url"
                   placeholder="https://example.com"
@@ -233,6 +241,7 @@ export default function Monitor() {
                   }}
                   required
                 />
+                <label className={cn(label())}>監視間隔(秒)</label>
                 <input
                   type="number"
                   placeholder="監視間隔(秒)"

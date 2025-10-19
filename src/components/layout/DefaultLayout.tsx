@@ -12,20 +12,21 @@ export default function DefaultLayout({
   main,
 }: DefaultLayoutProps) {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen bg-gray-50">
       {/* サイドバー */}
-      <aside className="w-64 bg-white p-4 border-r border-gray-300">
+      <aside className="sticky top-0 h-screen w-64 bg-white border-r border-gray-300 p-4 flex-shrink-0 overflow-y-auto">
         {sidebar}
       </aside>
 
       {/* メインエリア */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-col flex-1 overflow-hidden">
         {/* ヘッダー */}
-        <header className="bg-white border-b border-gray-300">{header}</header>
+        <header className="sticky top-0 z-30 bg-white border-b border-gray-300">
+          {header}
+        </header>
+
         {/* メインコンテンツ */}
-        <main className="flex-1  bg-gray-50 overflow-y-auto p-8 border-gray-200">
-          {main}
-        </main>
+        <main className="flex-1 overflow-y-auto p-8">{main}</main>
       </div>
     </div>
   );
