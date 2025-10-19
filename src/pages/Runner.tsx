@@ -24,7 +24,7 @@ export default function Runner() {
       main={
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Runner</h2>
+            <h2 className="text-xl font-semibold">Monitor Runner</h2>
             <Button
               intent={running ? "danger" : "primary"}
               onClick={handleRun}
@@ -34,9 +34,9 @@ export default function Runner() {
             </Button>
           </div>
 
-          <div className="bg-white shadow rounded-lg p-4">
+          <div className="bg-white rounded-lg p-4 border border-gray-300">
             <h3 className="text-lg font-semibold mb-2">ログ</h3>
-            <div className="bg-gray-500 rounded p-3 h-48 overflow-y-auto text-sm text-gray-700">
+            <div className="bg-gray-500 rounded p-3 h-48 overflow-y-auto text-sm text-gray-700 border-gray-900">
               {logs.length === 0 ? (
                 <p className="text-gray-400">実行ログがありません</p>
               ) : (

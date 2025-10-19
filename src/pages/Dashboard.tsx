@@ -8,9 +8,11 @@ export default function Dashboard() {
       sidebar={<Sidebar />}
       header={<Header title="Dashboard" />}
       main={
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* アラート情報 */}
-          <h2 className="text-xl font-semibold">アラート情報</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">アラート情報</h2>
+          </div>
           <div className="bg-white p-6 rounded-md border border-gray-300">
             <p className="text-gray-600">
               現在アクティブなアラートはありません。

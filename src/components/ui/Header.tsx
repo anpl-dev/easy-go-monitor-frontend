@@ -18,7 +18,10 @@ export function Header({ title = "Dashboard" }: HeaderProps) {
   return (
     <header className={cn(header())}>
       {/* 左側: ページタイトル */}
-      <h1 className="text-xl font-semibold text-gray-800">{title}</h1>
+      <div className="flex-col items-center gap-y-3">
+        <h1 className="text-blue-600 font-bold mb-4">Easy Go Monitor</h1>
+        <h1 className="text-2xl font-semibold text-gray-800">{title}</h1>
+      </div>
 
       {/* 右側: 操作ボタン */}
       <div className="flex items-center gap-3">

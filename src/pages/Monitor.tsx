@@ -55,7 +55,7 @@ export default function Monitor() {
           ) : monitors.length === 0 ? (
             <p className="text-gray-500">モニターが未登録です</p>
           ) : (
-            <ul className="divide-y divide-gray-100 bg-white rounded-lg">
+            <ul className="divide-y divide-gray-300 bg-white rounded-md border border-gray-300">
               {monitors.map((m) => (
                 <li
                   key={m.id}
