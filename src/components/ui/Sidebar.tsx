@@ -4,7 +4,7 @@ import { LogOut, Home, BarChart3, Settings, Play, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 import { VERSION } from "../../constants/config";
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const sidebar = tv({
   base: "flex flex-col h-full bg-white relative",
@@ -40,13 +40,30 @@ export default function Sidebar() {
   ];
   const { user, logout } = useUser();
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
 
   if (!user) return "unknown name";
 
   return (
     <aside className={cn(sidebar())}>
       {/* Header: ユーザ情報 */}
-      <div className="w-full flex items-center mb-8 mt-2">
+      <div className="w-full flex items-center mb-8 mt-2" ref={menuRef}>
         <button
           onClick={() => setOpen((prev) => !prev)}
           className={cn(userButton())}
