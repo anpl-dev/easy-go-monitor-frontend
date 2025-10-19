@@ -166,6 +166,34 @@ export default function Monitor() {
     }
   };
 
+  const handleDeleteMonitor = async (id: string) => {
+    const token = localStorage.getItem("token");
+    if (!token || !user?.id) return;
+
+    if (!confirm("このモニターを削除してもよろしいですか？")) return;
+
+    try {
+      const res = await fetch(`${API_ENDPOINTS.MONITORS}/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status !== 204) {
+        const jsonData = await res.json();
+        if (!res.ok) throw new Error(jsonData.message);
+      }
+
+      await fetchMonitors();
+    } catch (err) {
+      if (err instanceof TypeError) {
+        setError("Internal Server Erorr");
+      } else if (err instanceof Error) {
+        setError(err.message);
+      }
+    }
+  };
+
   return (
     <DefaultLayout
       sidebar={<Sidebar />}
@@ -268,7 +296,12 @@ export default function Monitor() {
                       >
                         編集
                       </Button>
-                      <Button intent="danger">削除</Button>
+                      <Button
+                        intent="danger"
+                        onClick={() => handleDeleteMonitor(m.id)}
+                      >
+                        削除
+                      </Button>
                     </div>
                   </div>
 
