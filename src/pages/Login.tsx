@@ -11,7 +11,7 @@ const label = tv({
 });
 
 const input = tv({
-  base: "w-full p-2 rounded-md focus:ring-2 focus:ring-blue-400 outline-none border border-gray800 text-gray-500",
+  base: "w-full p-2 rounded-md focus:ring-2 focus:ring-blue-400 outline-none border border-gray800 text-gray-800",
 });
 
 export default function Login() {
@@ -48,7 +48,7 @@ export default function Login() {
       navigate("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
-        setMessage("Internal server error");
+        setMessage("Invalid login or password");
       } else {
         setMessage("Failed to connecting server...");
       }
@@ -58,7 +58,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-start justify-center">
+    <div className="min-h-screen flex items-start justify-center bg-white">
       <div className="rounded-lg p-5 w-full max-w-md pt-50">
         <h1 className="text-4xl font-bold text-center text-blue-600 mb-10">
           Easy Go Monitor
