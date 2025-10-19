@@ -10,7 +10,7 @@ const label = tv({
   base: "font-bold block text-md text-gray-600 mb-1",
 });
 
-const form = tv({
+const input = tv({
   base: "w-full p-2 rounded-md focus:ring-2 focus:ring-blue-400 outline-none border border-gray800 text-gray-500",
 });
 
@@ -36,7 +36,10 @@ export default function Login() {
       const jsonData = await res.json();
 
       if (!res.ok) {
-        throw new Error(jsonData.error || jsonData.message || "Login Failed");
+        if (jsonData.message) {
+          console.log(jsonData.message);
+        }
+        throw new Error(jsonData.error || jsonData.message);
       }
 
       localStorage.setItem("token", jsonData.data.token);
@@ -45,7 +48,7 @@ export default function Login() {
       navigate("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
-        setMessage(err.message);
+        setMessage("Internal server error");
       } else {
         setMessage("Failed to connecting server...");
       }
@@ -68,7 +71,7 @@ export default function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={cn(form())}
+              className={cn(input())}
               placeholder="example@email.com"
               required
             />
@@ -80,7 +83,7 @@ export default function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={cn(form())}
+              className={cn(input())}
               placeholder="passowrd"
               required
             />

@@ -25,8 +25,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       })
         .then(async (res) => {
           const data = await res.json();
-          if (!res.ok)
-            throw new Error(data.message || "Failed to fetch user info");
+          if (!res.ok) throw new Error(data.message);
           setUser({
             id: data.data.id,
             name: data.data.name,
