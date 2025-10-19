@@ -3,6 +3,7 @@ import { cn } from "../../lib/utils";
 import { Home, BarChart3, Settings, Play, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
+import { VERSION } from "../../constants/config";
 
 const sidebar = tv({
   base: "flex flex-col h-full",
@@ -40,9 +41,7 @@ export default function Sidebar() {
           <div className="rounded-full border bg-gray-200">
             <User className="w-7 h-7 text-gray-600" />
           </div>
-          <div className="w-7 h-7 text-gray-600 text-xl">
-            {user.name}
-          </div>
+          <div className="w-7 h-7 text-gray-600 text-xl">{user.name}</div>
         </div>
       </div>
 
@@ -62,7 +61,7 @@ export default function Sidebar() {
 
       {/* Footer: システム情報 */}
       <div className="border-t border-gray-300 px-4 py-3 text-sm text-gray-500 ">
-        v1.0.0
+        {VERSION}
       </div>
     </aside>
   );
