@@ -63,7 +63,7 @@ export default function Sidebar() {
   return (
     <aside className={cn(sidebar())}>
       {/* Header: ユーザ情報 */}
-      <div className="w-full flex items-center mb-8 mt-2" ref={menuRef}>
+      <div className="w-full flex items-center mb-10 mt-2" ref={menuRef}>
         <button
           onClick={() => setOpen((prev) => !prev)}
           className={cn(userButton())
