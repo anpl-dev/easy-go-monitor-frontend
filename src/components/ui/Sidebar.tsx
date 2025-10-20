@@ -89,7 +89,7 @@ export default function Sidebar() {
       </div>
 
       {/* ナビゲーションリスト */}
-      <nav className="w-full flex-1 flex-col space-y-1">
+      <nav className="w-full flex-1 flex-col space-y-1j">
         {navItems.map(({ label, path, icon: Icon }) => (
           <NavLink key={path} to={path} end className="block">
             {({ isActive }) => (
