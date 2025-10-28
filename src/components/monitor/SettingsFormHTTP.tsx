@@ -2,16 +2,24 @@ import { cn } from "../../lib/utils";
 import { tv } from "tailwind-variants";
 
 const label = tv({ base: "block text-sm font-medium text-gray-700 mb-1" });
-const input = tv({ base: "border p-2 w-full rounded focus:ring-2 focus:ring-blue-400 focus:outline-none" });
+const input = tv({
+  base: "border p-2 w-full rounded focus:ring-2 focus:ring-blue-400 focus:outline-none",
+});
+
+type HTTPSettings = {
+  method?: string;
+  timeout?: number;
+  expected_status?: number;
+};
 
 type Props = {
-  value: Record<string, any>;
-  onChange: (v: Record<string, any>) => void;
+  value: HTTPSettings;
+  onChange: (v: HTTPSettings) => void;
 };
 
 export function SettingsFormHTTP({ value, onChange }: Props) {
-  const handleChange = (key: string, val: string | number) => {
-    onChange({ ...value, [key]: val });
+  const handleChange = (key: keyof HTTPSettings, val: string | number) => {
+    onChange({ ...value, [key]: val } as HTTPSettings);
   };
 
   return (
@@ -40,7 +48,9 @@ export function SettingsFormHTTP({ value, onChange }: Props) {
         type="number"
         className={cn(input())}
         value={value.expected_status ?? 200}
-        onChange={(e) => handleChange("expected_status", Number(e.target.value))}
+        onChange={(e) =>
+          handleChange("expected_status", Number(e.target.value))
+        }
       />
     </div>
   );

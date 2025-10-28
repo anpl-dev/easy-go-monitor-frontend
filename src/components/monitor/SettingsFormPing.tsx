@@ -9,8 +9,11 @@ const input = tv({
 });
 
 type Props = {
-  value: Record<string, unknown>;
-  onChange: (v: Record<string, unknown>) => void;
+  value: {
+    count?: number;
+    timeout?: number;
+  };
+  onChange: (v: { count?: number; timeout?: number }) => void;
 };
 
 export function SettingsFormPing({ value, onChange }: Props) {
