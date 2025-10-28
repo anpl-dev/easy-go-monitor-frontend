@@ -10,22 +10,31 @@ import { Modal } from "../components/ui/Modal";
 import { cn } from "../lib/utils";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
+import { SettingsFormHTTP } from "../components/monitor/SettingsFormHTTP";
+import { SettingsFormPing } from "../components/monitor/SettingsFormPing";
+import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 
 type Monitor = {
   id: string;
   name: string;
   url: string;
-  interval_second: number;
+  type: string;
+  settings: Record<string, unknown>;
+  is_enabled: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 type MonitorUpdateInput = {
   name: string;
   url: string;
-  interval_second: number;
+  type: string;
+  settings: Record<string, unknown>;
+  is_enabled: boolean;
 };
 
 const label = tv({
-  base: "block text-sm font-meduim text-gray-700 mb-1",
+  base: "block text-sm font-medium text-gray-700 mb-1",
 });
 
 const input = tv({
@@ -46,20 +55,20 @@ export default function Monitor() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+
   const [newMonitor, setNewMonitor] = useState({
     name: "",
     url: "",
-    interval_second: 60,
-  });
-  const [editingMonitorID, setEditingMonitorID] = useState<string | null>(null);
-  const [editData, setEditData] = useState({
-    name: "",
-    url: "",
-    interval_second: 60,
+    type: "http",
   });
 
-  const monitorInput = tv({
-    base: "border p-2 w-full rounded",
+  const [editingMonitorID, setEditingMonitorID] = useState<string | null>(null);
+  const [editData, setEditData] = useState<MonitorUpdateInput>({
+    name: "",
+    url: "",
+    type: "http",
+    settings: {},
+    is_enabled: true,
   });
 
   const fetchMonitors = useCallback(async () => {
@@ -69,38 +78,28 @@ export default function Monitor() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await fetch(
-        `${API_ENDPOINTS.MONITORS}/search?user_id=${user.id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
+      const res = await fetch(`${API_ENDPOINTS.MONITORS}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const jsonData = await res.json();
       if (!res.ok) throw new Error(jsonData.message);
 
       setMonitors(jsonData.data || []);
-    } catch (err) {
-      if (err instanceof TypeError) {
-        setError("Failed to connecting server");
-      } else if (err instanceof Error) {
-        setError("Unexpected Error");
-      }
+    } catch {
+      setError("モニター情報の取得に失敗しました");
     } finally {
       setLoading(false);
     }
   }, [user?.id]);
 
-  // 初回実行
   useEffect(() => {
     fetchMonitors();
   }, [fetchMonitors]);
 
   const handleAddMonitor = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const token = localStorage.getItem("token");
-    if (!token || !user?.id) return;
+    if (!token) return;
 
     try {
       const res = await fetch(API_ENDPOINTS.MONITORS, {
@@ -112,38 +111,72 @@ export default function Monitor() {
         body: JSON.stringify({
           name: newMonitor.name,
           url: newMonitor.url,
-          interval_second: newMonitor.interval_second,
+          type: newMonitor.type,
         }),
       });
 
       const jsonData = await res.json();
-      if (!res.ok) {
-        throw new Error(jsonData.message);
-      }
+      if (!res.ok) throw new Error(jsonData.message);
 
-      // モニター取得
       await fetchMonitors();
-
-      // モーダルを閉じる
       setOpen(false);
-
-      // 入力フォームリセット
-      setNewMonitor({
-        name: "",
-        url: "",
-        interval_second: 60,
-      });
+      setNewMonitor({ name: "", url: "", type: "http" });
       toast.success("モニターを作成しました");
-    } catch (err) {
-      if (err instanceof Error) {
-        toast.error("作成中にエラーが発生しました");
-      }
+    } catch {
+      toast.error("作成中にエラーが発生しました");
     }
   };
 
   const handleUpdateMonitor = async (id: string, data: MonitorUpdateInput) => {
     const token = localStorage.getItem("token");
-    if (!token || !user?.id) return;
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API_ENDPOINTS.MONITORS}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      const jsonData = await res.json();
+      if (!res.ok) throw new Error(jsonData.message);
+
+      await fetchMonitors();
+      setEditingMonitorID(null);
+      toast.success("モニターを更新しました");
+    } catch {
+      toast.error("更新中にエラーが発生しました");
+    }
+  };
+
+  const handleDeleteMonitor = async (id: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    if (!confirm("このモニターを削除してもよろしいですか？")) return;
+
+    try {
+      const res = await fetch(`${API_ENDPOINTS.MONITORS}/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status !== 204) {
+        const jsonData = await res.json();
+        if (!res.ok) throw new Error(jsonData.message);
+      }
+
+      await fetchMonitors();
+      toast.success("モニターを削除しました");
+    } catch {
+      toast.error("削除中にエラーが発生しました");
+    }
+  };
+
+  const handleToggleMonitor = async (id: string, isEnabled: boolean) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
     try {
       const res = await fetch(`${API_ENDPOINTS.MONITORS}/${id}`, {
@@ -153,51 +186,19 @@ export default function Monitor() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          name: data.name,
-          url: data.url,
-          interval_second: data.interval_second,
+          is_enabled: isEnabled,
         }),
       });
+
       const jsonData = await res.json();
-      if (!res.ok) {
-        throw new Error(jsonData.message);
-      }
+      if (!res.ok) throw new Error(jsonData.message);
 
-      await fetchMonitors();
-
-      toast.success("モニターを更新しました");
-      setEditingMonitorID(null);
-    } catch (err) {
-      if (err instanceof Error) {
-        toast.error("更新中にエラーが発生しました。");
-      }
-    }
-  };
-
-  const handleDeleteMonitor = async (id: string) => {
-    const token = localStorage.getItem("token");
-    if (!token || !user?.id) return;
-
-    if (!confirm("このモニターを削除してもよろしいですか？")) return;
-
-    try {
-      const res = await fetch(`${API_ENDPOINTS.MONITORS}/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.status !== 204) {
-        const jsonData = await res.json();
-        if (!res.ok) throw new Error(jsonData.message);
-      }
-
-      await fetchMonitors();
-      toast.success("モニターを削除しました");
-    } catch (err) {
-      if (err instanceof Error) {
-        toast.error("削除中にエラーが発生しました。");
-      }
+      toast.success(
+        isEnabled ? "モニターを有効化しました" : "モニターを無効化しました"
+      );
+      fetchMonitors();
+    } catch {
+      toast.error("状態の変更に失敗しました");
     }
   };
 
@@ -206,20 +207,17 @@ export default function Monitor() {
       sidebar={<Sidebar />}
       header={
         <Header title="Monitors">
-          {/* 検索ボックス */}
           <div className="relative w-72">
             <input
               type="search"
               id="search"
               placeholder="検索"
               className={cn(searchInput())}
-              onChange={(e) => console.log("検索:", e.target.value)}
             />
             <label htmlFor="search" className={cn(searchLabel())}>
               <Search className="w-5 h-5" />
             </label>
           </div>
-          {/* 追加ボタン */}
           <Button intent="primary" onClick={() => setOpen(true)}>
             + 新規追加
           </Button>
@@ -227,65 +225,52 @@ export default function Monitor() {
       }
       main={
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">登録済みモニター</h2>
+          <h2 className="text-xl font-semibold">登録済みモニター</h2>
 
-            {/* モーダル： 新規モニター追加 */}
-            <Modal open={open} title="新規モニター追加">
-              <form onSubmit={handleAddMonitor} className="space-y-3">
-                <label className={cn(label())}>モニター名</label>
-                <input
-                  type="text"
-                  placeholder="new monitor"
-                  className={cn(monitorInput())}
-                  value={newMonitor.name}
-                  onChange={(e) => {
-                    setNewMonitor((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }));
-                  }}
-                  required
-                />
-                <label className={cn(label())}>URL</label>
-                <input
-                  type="url"
-                  placeholder="https://example.com"
-                  className={cn(monitorInput())}
-                  value={newMonitor.url}
-                  onChange={(e) => {
-                    setNewMonitor((prev) => ({
-                      ...prev,
-                      url: e.target.value,
-                    }));
-                  }}
-                  required
-                />
-                <label className={cn(label())}>監視間隔(秒)</label>
-                <input
-                  type="number"
-                  placeholder="監視間隔(秒)"
-                  className={cn(monitorInput())}
-                  value={newMonitor.interval_second}
-                  onChange={(e) => {
-                    setNewMonitor((prev) => ({
-                      ...prev,
-                      interval_second: Number(e.target.value),
-                    }));
-                  }}
-                  required
-                />
-                <div className="flex justify-end gap-2 mt-4">
-                  <Button intent="secondary" onClick={() => setOpen(false)}>
-                    キャンセル
-                  </Button>
-                  <Button intent="primary" type="submit">
-                    保存
-                  </Button>
-                </div>
-              </form>
-            </Modal>
-          </div>
+          <Modal open={open} title="新規モニター追加">
+            <form onSubmit={handleAddMonitor} className="space-y-3">
+              <label className={cn(label())}>モニター名</label>
+              <input
+                type="text"
+                className={cn(input())}
+                value={newMonitor.name}
+                onChange={(e) =>
+                  setNewMonitor((prev) => ({ ...prev, name: e.target.value }))
+                }
+                required
+              />
+              <label className={cn(label())}>URL</label>
+              <input
+                type="url"
+                className={cn(input())}
+                value={newMonitor.url}
+                onChange={(e) =>
+                  setNewMonitor((prev) => ({ ...prev, url: e.target.value }))
+                }
+                required
+              />
+              <label className={cn(label())}>タイプ</label>
+              <select
+                className={cn(input())}
+                value={newMonitor.type}
+                onChange={(e) =>
+                  setNewMonitor((prev) => ({ ...prev, type: e.target.value }))
+                }
+              >
+                <option value="http">HTTP</option>
+                <option value="ping">Ping</option>
+              </select>
+              <div className="flex justify-end gap-2 mt-4">
+                <Button intent="secondary" onClick={() => setOpen(false)}>
+                  キャンセル
+                </Button>
+                <Button intent="primary" type="submit">
+                  保存
+                </Button>
+              </div>
+            </form>
+          </Modal>
+
           {loading ? (
             <p className="text-gray-500">読み込み中...</p>
           ) : error ? (
@@ -296,16 +281,19 @@ export default function Monitor() {
             <ul className="divide-y divide-gray-300 bg-white rounded-md border border-gray-300">
               {monitors.map((m) => (
                 <li key={m.id} className="p-6 border-b border-gray-200">
-                  {/* 上部（タイトルとボタン） */}
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="font-semibold text-gray-800">{m.name}</p>
                       <p className="text-sm text-gray-600">{m.url}</p>
                       <p className="text-xs text-gray-400">
-                        Interval: {m.interval_second}s
+                        Type: {m.type} / {m.is_enabled ? "有効" : "無効"}
                       </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-3 items-center">
+                      <ToggleSwitch
+                        checked={m.is_enabled}
+                        onChange={(val) => handleToggleMonitor(m.id, val)}
+                      />
                       <Button
                         intent="secondary"
                         onClick={() => {
@@ -316,7 +304,9 @@ export default function Monitor() {
                             setEditData({
                               name: m.name,
                               url: m.url,
-                              interval_second: m.interval_second,
+                              type: m.type,
+                              settings: m.settings || {},
+                              is_enabled: m.is_enabled,
                             });
                           }
                         }}
@@ -332,45 +322,44 @@ export default function Monitor() {
                     </div>
                   </div>
 
-                  {/* 下部（フォーム） */}
                   {editingMonitorID === m.id && (
                     <div className="mt-4 bg-white p-4 rounded-md space-y-3 border border-gray-300">
-                      <label className={cn(label())}>モニター名</label>
-                      <input
-                        type="text"
-                        value={editData.name}
-                        onChange={(e) =>
-                          setEditData((prev) => ({
-                            ...prev,
-                            name: e.target.value,
-                          }))
-                        }
-                        className={cn(input())}
-                      />
-                      <label className={cn(label())}>URL</label>
-                      <input
-                        type="url"
-                        value={editData.url}
-                        onChange={(e) =>
-                          setEditData((prev) => ({
-                            ...prev,
-                            url: e.target.value,
-                          }))
-                        }
-                        className={cn(input())}
-                      />
-                      <label className={cn(label())}>監視間隔(秒)</label>
-                      <input
-                        type="number"
-                        value={editData.interval_second}
-                        onChange={(e) =>
-                          setEditData((prev) => ({
-                            ...prev,
-                            interval_second: Number(e.target.value),
-                          }))
-                        }
-                        className={cn(input())}
-                      />
+                      <label className={cn(label())}>タイプ: {m.type}</label>
+                      {m.type === "http" && (
+                        <SettingsFormHTTP
+                          value={editData.settings}
+                          onChange={(v) =>
+                            setEditData((prev) => ({
+                              ...prev,
+                              settings: v,
+                            }))
+                          }
+                        />
+                      )}
+                      {m.type === "ping" && (
+                        <SettingsFormPing
+                          value={editData.settings}
+                          onChange={(v) =>
+                            setEditData((prev) => ({
+                              ...prev,
+                              settings: v,
+                            }))
+                          }
+                        />
+                      )}
+                      <div className="flex items-center gap-2 mt-2">
+                        <input
+                          type="checkbox"
+                          checked={editData.is_enabled}
+                          onChange={(e) =>
+                            setEditData((prev) => ({
+                              ...prev,
+                              is_enabled: e.target.checked,
+                            }))
+                          }
+                        />
+                        <label>有効</label>
+                      </div>
                       <div className="flex justify-end gap-2 mt-3">
                         <Button
                           intent="secondary"
