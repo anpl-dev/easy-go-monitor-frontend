@@ -11,7 +11,6 @@ import { cn } from "../lib/utils";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { SettingsFormHTTP } from "../components/monitor/SettingsFormHTTP";
-import { SettingsFormPing } from "../components/monitor/SettingsFormPing";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 
 type Monitor = {
@@ -268,7 +267,6 @@ export default function Monitor() {
                 }
               >
                 <option value="http">HTTP</option>
-                <option value="ping">Ping</option>
               </select>
               <div className="flex justify-end gap-2 mt-4">
                 <Button intent="secondary" onClick={() => setOpen(false)}>
@@ -346,30 +344,6 @@ export default function Monitor() {
                           }
                         />
                       )}
-                      {m.type === "ping" && (
-                        <SettingsFormPing
-                          value={editData.settings}
-                          onChange={(v) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              settings: v,
-                            }))
-                          }
-                        />
-                      )}
-                      <div className="flex items-center gap-2 mt-2">
-                        <input
-                          type="checkbox"
-                          checked={editData.is_enabled}
-                          onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              is_enabled: e.target.checked,
-                            }))
-                          }
-                        />
-                        <label>有効</label>
-                      </div>
                       <div className="flex justify-end gap-2 mt-3">
                         <Button
                           intent="secondary"
