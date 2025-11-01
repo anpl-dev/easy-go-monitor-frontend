@@ -220,7 +220,7 @@ export default function Monitor() {
             <input
               type="search"
               id="search"
-              placeholder="検索"
+              placeholder="検索(Mock)"
               className={cn(searchInput())}
             />
             <label htmlFor="search" className={cn(searchLabel())}>

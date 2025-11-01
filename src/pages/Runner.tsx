@@ -179,7 +179,7 @@ export default function Runner() {
             <input
               type="search"
               id="search"
-              placeholder="検索"
+              placeholder="検索(Mock)"
               className={cn(searchInput())}
               onChange={(e) => console.log("検索:", e.target.value)}
             />
