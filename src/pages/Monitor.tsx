@@ -116,14 +116,19 @@ export default function Monitor() {
       });
 
       const jsonData = await res.json();
-      if (!res.ok) throw new Error(jsonData.message);
+      if (!res.ok) {
+        // --- サーバーメッセージ分岐 ---
+        toast.error(`Error: ${jsonData.message ?? "不明なエラー"}`);
+        return;
+      }
 
       await fetchMonitors();
       setOpen(false);
       setNewMonitor({ name: "", url: "", type: "http" });
       toast.success("モニターを作成しました");
-    } catch {
-      toast.error("作成中にエラーが発生しました");
+    } catch (err) {
+      console.error(err);
+      toast.error("通信中にエラーが発生しました");
     }
   };
 
@@ -179,8 +184,8 @@ export default function Monitor() {
     if (!token) return;
 
     try {
-      const res = await fetch(`${API_ENDPOINTS.MONITORS}/${id}`, {
-        method: "PUT",
+      const res = await fetch(`${API_ENDPOINTS.MONITORS}/${id}/enabled`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -190,8 +195,13 @@ export default function Monitor() {
         }),
       });
 
-      const jsonData = await res.json();
-      if (!res.ok) throw new Error(jsonData.message);
+      if (!res.ok) {
+        const jsonData = await res.json();
+        throw new Error(jsonData.message);
+      }
+      setMonitors((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, is_enabled: isEnabled } : m))
+      );
 
       toast.success(
         isEnabled ? "モニターを有効化しました" : "モニターを無効化しました"
