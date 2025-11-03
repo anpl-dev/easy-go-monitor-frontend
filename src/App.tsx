@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import type { JSX } from "react";
 import Runner from "./pages/Runner";
 import Monitor from "./pages/Monitor";
+import Settings from "./pages/Settings";
 import { useUser } from "./hooks/useUser";
 import { UserProvider } from "./context/UserProvider";
 import { Toaster } from "sonner";
@@ -62,14 +63,14 @@ export default function App() {
                   />
 
                   {/* 設定ページ */}
-                  {/* <Route
-                  path="/settings"
-                  element={
-                    <ProtectedRoute>
-                      <Setting />
-                    </ProtectedRoute>
-                  }
-                /> */}
+                  <Route
+                    path="/settings"
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    }
+                  />
                 </Routes>
               </UserProvider>
             }
