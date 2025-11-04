@@ -61,7 +61,7 @@ export default function SettingsPage() {
       sidebar={<Sidebar />}
       header={<Header title="Settings" />}
       main={
-        <div className="p-10 bg-white border border-gray-400 rounded-md">
+        <div className="p-10 bg-white border border-gray-400 rounded-sm">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             ユーザー設定
           </h2>

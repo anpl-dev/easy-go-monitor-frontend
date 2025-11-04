@@ -46,10 +46,6 @@ export default function Runner() {
     }
   }, [user?.id, monitors, fetchRunners]);
 
-  useEffect(() => {
-    console.log("runners", runners);
-  }, [runners]);
-
   // --- Runner作成 ---
   const handleCreateRunner = async (e: React.FormEvent) => {
     e.preventDefault();

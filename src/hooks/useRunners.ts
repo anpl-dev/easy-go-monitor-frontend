@@ -17,16 +17,27 @@ export const useRunners = (userId?: string) => {
   const fetchRunners = useCallback(async () => {
     if (!userId) return;
     setLoading(true);
-    const token = localStorage.getItem("token");
-    if (!token) return;
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-    const res = await fetch(`${API_ENDPOINTS.RUNNERS}?user_id=${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      const res = await fetch(`${API_ENDPOINTS.RUNNERS}?user_id=${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
 
-    const json = await res.json();
-    if (res.ok) setRunners(json.data || []);
-    setLoading(false);
+      if (!res.ok) {
+        console.error("fetchRunners failed:", json.message);
+        return;
+      }
+
+      setRunners(json.data || []);
+    } catch (err) {
+      console.error("fetchRunners error:", err);
+      setRunners([]);
+    } finally {
+      setLoading(false);
+    }
   }, [userId]);
 
   const deleteRunner = async (id: string) => {

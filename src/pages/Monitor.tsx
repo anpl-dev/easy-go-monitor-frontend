@@ -4,6 +4,7 @@ import Sidebar from "@/components/ui/Sidebar";
 import { Header } from "@/components/ui/Header";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { SideModal } from "@/components/ui/SideModal";
 import { API_ENDPOINTS } from "@/constants/api";
 import { useUser } from "@/hooks/useUser";
 import { MonitorList } from "@/components/monitor/MonitorList";
@@ -20,6 +21,7 @@ export default function Monitor() {
   const { user } = useUser();
   const [monitors, setMonitors] = useState<Monitor[]>([]);
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [editingMonitorID, setEditingMonitorID] = useState<string | null>(null);
   const [editData, setEditData] = useState<MonitorUpdateInput>({
     name: "",
@@ -60,16 +62,11 @@ export default function Monitor() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name: newMonitor.name,
-          url: newMonitor.url,
-          type: newMonitor.type,
-        }),
+        body: JSON.stringify(newMonitor),
       });
 
       const jsonData = await res.json();
       if (!res.ok) {
-        // --- サーバーメッセージ分岐 ---
         toast.error(`Error: ${jsonData.message ?? "不明なエラー"}`);
         return;
       }
@@ -103,6 +100,7 @@ export default function Monitor() {
 
       await fetchMonitors();
       setEditingMonitorID(null);
+      setEditOpen(false);
       toast.success("モニターを更新しました");
     } catch {
       toast.error("更新中にエラーが発生しました");
@@ -125,6 +123,9 @@ export default function Monitor() {
       }
 
       await fetchMonitors();
+      if (typeof window !== "undefined" && window.dispatchEvent) {
+        window.dispatchEvent(new CustomEvent("runner:refresh"));
+      }
       toast.success("モニターを削除しました");
     } catch {
       toast.error("削除中にエラーが発生しました");
@@ -142,9 +143,7 @@ export default function Monitor() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          is_enabled: isEnabled,
-        }),
+        body: JSON.stringify({ is_enabled: isEnabled }),
       });
 
       if (!res.ok) {
@@ -178,9 +177,6 @@ export default function Monitor() {
         <div className="space-y-6">
           <MonitorList
             monitors={monitors}
-            editingMonitorID={editingMonitorID}
-            editData={editData}
-            setEditData={setEditData}
             onEditClick={(id, m) => {
               setEditingMonitorID(id);
               setEditData({
@@ -190,21 +186,13 @@ export default function Monitor() {
                 settings: m.settings || {},
                 is_enabled: m.is_enabled,
               });
+              setEditOpen(true);
             }}
             onDelete={handleDeleteMonitor}
             onToggle={handleToggleMonitor}
-            onCancel={() => setEditingMonitorID(null)}
-            onSave={(id) => handleUpdateMonitor(id, editData)}
-            renderSettingsForm={() => (
-              <SettingsFormHTTP
-                value={editData.settings}
-                onChange={(v) =>
-                  setEditData((prev) => ({ ...prev, settings: v }))
-                }
-              />
-            )}
           />
 
+          {/* 新規追加用モーダル */}
           <Modal
             open={open}
             title="新規モニター追加"
@@ -219,6 +207,34 @@ export default function Monitor() {
               onCancel={() => setOpen(false)}
             />
           </Modal>
+
+          {/* 編集用サイドモーダル */}
+          <SideModal
+            open={editOpen}
+            title={`モニター編集：${editData.name}`}
+            onClose={() => setEditOpen(false)}
+          >
+            <SettingsFormHTTP
+              value={editData.settings}
+              onChange={(v) =>
+                setEditData((prev) => ({ ...prev, settings: v }))
+              }
+            />
+            <div className="flex justify-end gap-2 mt-4">
+              <Button intent="secondary" onClick={() => setEditOpen(false)}>
+                キャンセル
+              </Button>
+              <Button
+                intent="primary"
+                onClick={() =>
+                  editingMonitorID &&
+                  handleUpdateMonitor(editingMonitorID, editData)
+                }
+              >
+                保存
+              </Button>
+            </div>
+          </SideModal>
         </div>
       }
     />

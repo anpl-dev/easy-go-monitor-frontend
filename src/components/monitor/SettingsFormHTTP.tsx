@@ -31,8 +31,8 @@ export function SettingsFormHTTP({ value, onChange }: Props) {
         onChange={(e) => handleChange("method", e.target.value)}
       >
         <option value="GET">GET</option>
-        <option value="POST">POST</option>
-        <option value="HEAD">HEAD</option>
+        <option value="POST">POST(Mock)</option>
+        <option value="HEAD">HEAD(Mock)</option>
       </select>
 
       <label className={cn(label())}>タイムアウト（秒）</label>
