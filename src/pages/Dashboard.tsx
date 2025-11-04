@@ -79,9 +79,9 @@ export default function Dashboard() {
                 <thead className="bg-gray-50 text-gray-700 font-semibold border-b">
                   <tr>
                     <th className="px-4 py-2 text-left">Runner ID</th>
-                    <th className="px-4 py-2 text-left">メッセージ</th>
-                    <th className="px-4 py-2 text-left">応答時間</th>
-                    <th className="px-4 py-2 text-left">発生時刻</th>
+                    <th className="px-4 py-2 text-left">Message</th>
+                    <th className="px-4 py-2 text-left">Response Time</th>
+                    <th className="px-4 py-2 text-left">TimeStamp</th>
                   </tr>
                 </thead>
                 <tbody>
