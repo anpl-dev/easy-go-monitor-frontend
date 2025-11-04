@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { tv } from "tailwind-variants";
+import type { MonitorItem, RunnerCreateInput } from "@/type/runner";
 
 // --- styles ---
 const label = tv({ base: "block text-sm font-medium text-gray-700 mb-1" });
@@ -8,25 +9,10 @@ const input = tv({
   base: "border p-2 w-full rounded focus:ring-2 focus:ring-blue-400 focus:outline-none",
 });
 
-export type RunnerInput = {
-  name: string;
-  region: string;
-  interval_second: number;
-  monitor_id: string;
-};
-
-export type MonitorItem = {
-  id: string;
-  name: string;
-  url?: string;
-  type?: string;
-  is_enabled?: boolean;
-};
-
 type RunnerFormProps = {
-  runner: RunnerInput;
+  runner: RunnerCreateInput;
   monitors: MonitorItem[];
-  onChange: (field: keyof RunnerInput, value: string | number) => void;
+  onChange: (field: keyof RunnerCreateInput, value: string | number) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   onCancel: () => void;
 };

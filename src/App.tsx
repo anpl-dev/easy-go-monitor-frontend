@@ -77,7 +77,7 @@ export default function App() {
           />
         </Routes>
       </BrowserRouter>
-      <Toaster position="top-right" richColors closeButton duration={3000} />
+      <Toaster position="top-center" richColors expand={false} duration={2000} />
     </>
   );
 }

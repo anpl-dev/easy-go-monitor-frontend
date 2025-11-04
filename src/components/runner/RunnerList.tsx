@@ -1,25 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { tv } from "tailwind-variants";
-
-export type RunnerWithMonitor = {
-  id: string;
-  name: string;
-  region: string;
-  interval_second: number;
-  is_enabled: boolean;
-  monitor_id: string;
-  monitor_name?: string;
-  monitor_url?: string;
-  monitor_type?: string;
-  settings?: {
-    method?: string;
-    timeout_ms?: number;
-    headers?: Record<string, string>;
-    body?: string;
-  };
-  monitor_is_enabled?: boolean;
-};
+import type { RunnerWithMonitor } from "@/type/runner";
 
 type RunnerListProps = {
   runners: RunnerWithMonitor[];
@@ -48,15 +30,15 @@ export function RunnerList({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50 text-gray-700 font-semibold border-b">
           <tr>
-            <th className={cn(listColumn())}>Runner名</th>
+            <th className={cn(listColumn())}>RunnerName</th>
             <th className={cn(listColumn())}>Region</th>
             <th className={cn(listColumn())}>Interval</th>
-            <th className={cn(listColumn())}>状態</th>
-            <th className={cn(listColumn())}>Monitor名</th>
+            <th className={cn(listColumn())}>Status</th>
+            <th className={cn(listColumn())}>MonitorName</th>
             <th className={cn(listColumn())}>URL</th>
             <th className={cn(listColumn())}>Type</th>
             <th className={cn(listColumn())}>Method</th>
-            <th className={cn(listColumn())}>操作</th>
+            <th className={cn(listColumn())}>Operation</th>
             <th className={cn(listColumn())}></th>
           </tr>
         </thead>

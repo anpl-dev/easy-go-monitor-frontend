@@ -33,13 +33,13 @@ export function MonitorList({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50 text-gray-700 font-semibold border-b">
           <tr>
-            <th className="px-4 py-2 text-left">モニター名</th>
+            <th className="px-4 py-2 text-left">MonitorName</th>
             <th className="px-4 py-2 text-left">URL</th>
-            <th className="px-4 py-2 text-left">タイプ</th>
-            <th className="px-4 py-2 text-left">状態</th>
-            <th className="px-4 py-2 text-left">作成日</th>
-            <th className="px-4 py-2 text-left">更新日</th>
-            <th className="px-4 py-2 text-right">操作</th>
+            <th className="px-4 py-2 text-left">Type</th>
+            <th className="px-4 py-2 text-left">Status</th>
+            <th className="px-4 py-2 text-left">Created</th>
+            <th className="px-4 py-2 text-left">Updated</th>
+            <th className="px-4 py-2 text-left">Operation</th>
           </tr>
         </thead>
         <tbody>
@@ -49,9 +49,7 @@ export function MonitorList({
               className="border-t hover:bg-gray-50 transition-colors"
             >
               {/* モニター名 */}
-              <td className="px-4 py-2 font-medium text-gray-900">
-                {m.name}
-              </td>
+              <td className="px-4 py-2 font-medium text-gray-900">{m.name}</td>
 
               {/* URL */}
               <td className="px-4 py-2 max-w-[240px] truncate text-blue-600">
@@ -86,18 +84,18 @@ export function MonitorList({
               </td>
 
               {/* 作成日 */}
-              <td className="px-4 py-2 text-gray-500 text-xs">
+              <td className="px-4 py-2 text-xs">
                 {new Date(m.created_at).toLocaleString()}
               </td>
 
               {/* 更新日 */}
-              <td className="px-4 py-2 text-gray-500 text-xs">
+              <td className="px-4 py-2 text-xs">
                 {new Date(m.updated_at).toLocaleString()}
               </td>
 
               {/* 操作ボタン */}
-              <td className="px-4 py-2 text-right">
-                <div className="flex items-center justify-end gap-2">
+              <td className="px-4 py-2 text-left">
+                <div className="flex items-center gap-2">
                   <ToggleSwitch
                     checked={m.is_enabled}
                     onChange={(v) => onToggle(m.id, v)}

@@ -5,4 +5,5 @@ export const API_ENDPOINTS = {
   USERS: `${API_BASE_URL}/users`,
   MONITORS: `${API_BASE_URL}/monitors`,
   RUNNERS: `${API_BASE_URL}/runners`,
+  RUNNER_HISTORIES: `${API_BASE_URL}/runners/histories`,
 };

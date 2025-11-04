@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { API_ENDPOINTS } from "@/constants/api";
 import { useMonitors } from "@/hooks/useMonitors";
+import type { RunnerUpdateInput, RunnerWithMonitor } from "@/type/runner";
+import { SideModal } from "@/components/ui/SideModal";
 
 export default function Runner() {
   const { user } = useUser();
@@ -39,6 +41,10 @@ export default function Runner() {
     };
   });
   const isLoading = loading || monitorsLoading;
+  const [editingRunner, setEditingRunner] = useState<RunnerWithMonitor | null>(
+    null
+  );
+  const [editData, setEditData] = useState<RunnerUpdateInput | null>(null);
 
   useEffect(() => {
     if (user?.id && monitors.length > 0) {
@@ -103,6 +109,45 @@ export default function Runner() {
     }
   };
 
+  // --- Runner編集 ---
+  const handleEditRunner = (r: RunnerWithMonitor) => {
+    setEditingRunner(r);
+    setEditData({
+      name: r.name,
+      region: r.region,
+      interval_second: r.interval_second,
+      is_enabled: r.is_enabled,
+      monitor_id: r.monitor_id,
+    });
+  };
+  
+  // ---- Runner更新 ----
+  const handleUpdateRunner = async (id: string, data: RunnerUpdateInput) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API_ENDPOINTS.RUNNERS}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message);
+
+      toast.success("Runnerを更新しました");
+      setEditingRunner(null);
+      fetchRunners();
+    } catch (err) {
+      console.error(err);
+      toast.error("Runnerの更新に失敗しました");
+    }
+  };
+
   // --- Runner実行 ---
   const handleExecuteRunner = async (id: string) => {
     const token = localStorage.getItem("token");
@@ -139,13 +184,38 @@ export default function Runner() {
           {isLoading ? (
             <p className="text-gray-500">読み込み中...</p>
           ) : (
-            <RunnerList
-              runners={runnersWithMonitor}
-              onDelete={deleteRunner}
-              onExecute={handleExecuteRunner}
-              onShowHistory={handleShowHistory}
-              onEdit={() => toast.info("編集機能は準備中です")}
-            />
+            <>
+              <RunnerList
+                runners={runnersWithMonitor}
+                onDelete={deleteRunner}
+                onExecute={handleExecuteRunner}
+                onShowHistory={handleShowHistory}
+                onEdit={handleEditRunner}
+              />
+
+              {/* Runner編集サイドモーダル */}
+              <SideModal
+                open={!!editingRunner}
+                title="Runner編集"
+                onClose={() => setEditingRunner(null)}
+              >
+                {editData && (
+                  <RunnerForm
+                    runner={editData}
+                    monitors={monitors}
+                    onChange={(f, v) =>
+                      setEditData((prev) => ({ ...prev!, [f]: v }))
+                    }
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (editingRunner && editData)
+                        handleUpdateRunner(editingRunner.id, editData);
+                    }}
+                    onCancel={() => setEditingRunner(null)}
+                  />
+                )}
+              </SideModal>
+            </>
           )}
 
           {/* Runner作成モーダル */}
