@@ -18,8 +18,8 @@ import { sanitizeInput } from "@/lib/utils";
 
 export default function Runner() {
   const { user } = useUser();
-  const { runners, loading, fetchRunners, deleteRunner } = useRunners(user?.id);
-  const { monitors, loading: monitorsLoading } = useMonitors();
+  const { runners, fetchRunners, deleteRunner } = useRunners(user?.id);
+  const { monitors } = useMonitors();
   const [open, setOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [histories, setHistories] = useState([]);
@@ -31,7 +31,6 @@ export default function Runner() {
   });
   const runnersWithMonitor = runners.map((r) => {
     const monitor = monitors.find((m) => String(m.id) === String(r.monitor_id));
-    console.log(monitor);
     return {
       ...r,
       monitor_name: monitor?.name ?? "未設定",
@@ -41,7 +40,6 @@ export default function Runner() {
       monitor_is_enabled: monitor?.is_enabled ?? false,
     };
   });
-  const isLoading = loading || monitorsLoading;
   const [editingRunner, setEditingRunner] = useState<RunnerWithMonitor | null>(
     null
   );
@@ -189,42 +187,38 @@ export default function Runner() {
       }
       main={
         <div className="space-y-6">
-          {isLoading ? (
-            <p className="text-gray-500">読み込み中...</p>
-          ) : (
-            <>
-              <RunnerList
-                runners={runnersWithMonitor}
-                onDelete={deleteRunner}
-                onExecute={handleExecuteRunner}
-                onShowHistory={handleShowHistory}
-                onEdit={handleEditRunner}
-              />
+          <>
+            <RunnerList
+              runners={runnersWithMonitor}
+              onDelete={deleteRunner}
+              onExecute={handleExecuteRunner}
+              onShowHistory={handleShowHistory}
+              onEdit={handleEditRunner}
+            />
 
-              {/* Runner編集サイドモーダル */}
-              <SideModal
-                open={!!editingRunner}
-                title="Runner編集"
-                onClose={() => setEditingRunner(null)}
-              >
-                {editData && (
-                  <RunnerForm
-                    runner={editData}
-                    monitors={monitors}
-                    onChange={(f, v) =>
-                      setEditData((prev) => ({ ...prev!, [f]: v }))
-                    }
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (editingRunner && editData)
-                        handleUpdateRunner(editingRunner.id, editData);
-                    }}
-                    onCancel={() => setEditingRunner(null)}
-                  />
-                )}
-              </SideModal>
-            </>
-          )}
+            {/* Runner編集サイドモーダル */}
+            <SideModal
+              open={!!editingRunner}
+              title="Runner編集"
+              onClose={() => setEditingRunner(null)}
+            >
+              {editData && (
+                <RunnerForm
+                  runner={editData}
+                  monitors={monitors}
+                  onChange={(f, v) =>
+                    setEditData((prev) => ({ ...prev!, [f]: v }))
+                  }
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (editingRunner && editData)
+                      handleUpdateRunner(editingRunner.id, editData);
+                  }}
+                  onCancel={() => setEditingRunner(null)}
+                />
+              )}
+            </SideModal>
+          </>
 
           {/* Runner作成モーダル */}
           <Modal open={open} title="Runner作成" onClose={() => setOpen(false)}>

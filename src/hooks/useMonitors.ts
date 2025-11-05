@@ -8,7 +8,7 @@ export type Monitor = {
   url: string;
   type: string;
   is_enabled: boolean;
-  settings: Record<string, unknown>
+  settings: Record<string, unknown>;
 };
 
 export function useMonitors() {
@@ -30,11 +30,9 @@ export function useMonitors() {
         : Array.isArray(json.items)
         ? json.items
         : [];
-      console.log("monitors", json);
       setMonitors(data);
     } catch (err) {
-      console.error("モニター一覧の取得に失敗:", err);
-      toast.error("モニター一覧の取得に失敗しました");
+      toast.error(`モニター一覧の取得に失敗しました: ${err}`);
     } finally {
       setLoading(false);
     }

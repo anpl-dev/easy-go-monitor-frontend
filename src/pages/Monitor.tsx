@@ -126,9 +126,6 @@ export default function Monitor() {
       }
 
       await fetchMonitors();
-      if (typeof window !== "undefined" && window.dispatchEvent) {
-        window.dispatchEvent(new CustomEvent("runner:refresh"));
-      }
       toast.success("モニターを削除しました");
     } catch {
       toast.error("削除中にエラーが発生しました");
