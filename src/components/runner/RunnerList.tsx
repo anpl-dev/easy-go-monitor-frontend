@@ -30,11 +30,11 @@ export function RunnerList({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50 text-gray-700 font-semibold border-b">
           <tr>
-            <th className={cn(listColumn())}>RunnerName</th>
+            <th className={cn(listColumn())}>Runner Name</th>
             <th className={cn(listColumn())}>Region</th>
             <th className={cn(listColumn())}>Interval</th>
             <th className={cn(listColumn())}>Status</th>
-            <th className={cn(listColumn())}>MonitorName</th>
+            <th className={cn(listColumn())}>Monitor Name</th>
             <th className={cn(listColumn())}>URL</th>
             <th className={cn(listColumn())}>Type</th>
             <th className={cn(listColumn())}>Method</th>

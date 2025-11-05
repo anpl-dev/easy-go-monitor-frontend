@@ -33,12 +33,12 @@ export function MonitorList({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50 text-gray-700 font-semibold border-b">
           <tr>
-            <th className="px-4 py-2 text-left">MonitorName</th>
+            <th className="px-4 py-2 text-left">Monitor Name</th>
             <th className="px-4 py-2 text-left">URL</th>
             <th className="px-4 py-2 text-left">Type</th>
             <th className="px-4 py-2 text-left">Status</th>
-            <th className="px-4 py-2 text-left">Created</th>
-            <th className="px-4 py-2 text-left">Updated</th>
+            <th className="px-4 py-2 text-left">Created time</th>
+            <th className="px-4 py-2 text-left">Updated time</th>
             <th className="px-4 py-2 text-left">Operation</th>
           </tr>
         </thead>
