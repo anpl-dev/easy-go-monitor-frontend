@@ -16,6 +16,7 @@ import type {
   MonitorUpdateInput,
 } from "@/type/monitor";
 import { toast } from "sonner";
+import { sanitizeInput } from "@/lib/utils";
 
 export default function Monitor() {
   const { user } = useUser();
@@ -26,14 +27,14 @@ export default function Monitor() {
   const [editData, setEditData] = useState<MonitorUpdateInput>({
     name: "",
     url: "",
-    type: "http",
+    type: "HTTP",
     settings: {},
     is_enabled: true,
   });
   const [newMonitor, setNewMonitor] = useState<MonitorCreateInput>({
     name: "",
     url: "",
-    type: "http",
+    type: "HTTP",
   });
 
   const fetchMonitors = useCallback(async () => {
@@ -50,34 +51,38 @@ export default function Monitor() {
     fetchMonitors();
   }, [fetchMonitors]);
 
-  const handleAddMonitor = async (e: React.FormEvent) => {
+  const handleCreateMonitor = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
+      const sanitized = {
+        name: sanitizeInput(newMonitor.name),
+        url: sanitizeInput(newMonitor.url),
+        type: newMonitor.type,
+      };
       const res = await fetch(API_ENDPOINTS.MONITORS, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newMonitor),
+        body: JSON.stringify(sanitized),
       });
 
       const jsonData = await res.json();
       if (!res.ok) {
-        toast.error(`Error: ${jsonData.message ?? "不明なエラー"}`);
+        toast.error(`Error: ${jsonData.message}`);
         return;
       }
 
       await fetchMonitors();
       setOpen(false);
-      setNewMonitor({ name: "", url: "", type: "http" });
+      setNewMonitor({ name: "", url: "", type: "HTTP" });
       toast.success("モニターを作成しました");
     } catch (err) {
-      console.error(err);
-      toast.error("通信中にエラーが発生しました");
+      toast.error(`通信中にエラーが発生しました: ${err}`);
     }
   };
 
@@ -201,9 +206,12 @@ export default function Monitor() {
             <MonitorForm
               monitor={newMonitor}
               onChange={(field, value) =>
-                setNewMonitor((prev) => ({ ...prev, [field]: value }))
+                setNewMonitor((prev) => ({
+                  ...prev,
+                  [field]: value,
+                }))
               }
-              onSubmit={handleAddMonitor}
+              onSubmit={handleCreateMonitor}
               onCancel={() => setOpen(false)}
             />
           </Modal>

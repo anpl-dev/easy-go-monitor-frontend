@@ -7,6 +7,8 @@ const input = tv({
 });
 
 type HTTPSettings = {
+  monitor_name?: string;
+  url?: string;
   method?: string;
   timeout?: number;
   expected_status?: number;
@@ -27,12 +29,13 @@ export function SettingsFormHTTP({ value, onChange }: Props) {
       <label className={cn(label())}>HTTPメソッド</label>
       <select
         className={cn(input())}
-        value={value.method || "GET"}
+        value={value.method}
         onChange={(e) => handleChange("method", e.target.value)}
       >
         <option value="GET">GET</option>
         <option value="POST">POST(Mock)</option>
-        <option value="HEAD">HEAD(Mock)</option>
+        <option value="POST">PUT(Mock)</option>
+        <option value="POST">DELETE(Mock)</option>
       </select>
 
       <label className={cn(label())}>タイムアウト（秒）</label>

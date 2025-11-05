@@ -14,6 +14,7 @@ import { API_ENDPOINTS } from "@/constants/api";
 import { useMonitors } from "@/hooks/useMonitors";
 import type { RunnerUpdateInput, RunnerWithMonitor } from "@/type/runner";
 import { SideModal } from "@/components/ui/SideModal";
+import { sanitizeInput } from "@/lib/utils";
 
 export default function Runner() {
   const { user } = useUser();
@@ -59,18 +60,25 @@ export default function Runner() {
     if (!token) return;
 
     try {
+      const sanitized = {
+        name: sanitizeInput(newRunner.name),
+        region: sanitizeInput(newRunner.region),
+        interval_second: newRunner.interval_second,
+        monitor_id: newRunner.monitor_id,
+      };
       const res = await fetch(API_ENDPOINTS.RUNNERS, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newRunner),
+        body: JSON.stringify(sanitized),
       });
 
+      const jsonData = await res.json();
       if (!res.ok) {
-        const json = await res.json();
-        throw new Error(json.message);
+        toast.error(`Error: ${jsonData.message}`);
+        return;
       }
 
       toast.success("Runnerを作成しました");
@@ -120,7 +128,7 @@ export default function Runner() {
       monitor_id: r.monitor_id,
     });
   };
-  
+
   // ---- Runner更新 ----
   const handleUpdateRunner = async (id: string, data: RunnerUpdateInput) => {
     const token = localStorage.getItem("token");

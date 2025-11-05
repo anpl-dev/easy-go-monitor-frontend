@@ -107,14 +107,16 @@ export function MonitorList({
                   >
                     編集
                   </Button>
-                  <Button
-                    intent="danger"
-                    size="sm"
-                    onClick={() => onDelete(m.id)}
-                  >
-                    削除
-                  </Button>
                 </div>
+              </td>
+              <td className="px-4 py-2 text-right">
+                <Button
+                  intent="danger"
+                  size="sm"
+                  onClick={() => onDelete(m.id)}
+                >
+                  削除
+                </Button>
               </td>
             </tr>
           ))}
