@@ -37,8 +37,8 @@ export function MonitorList({
             <th className="px-4 py-2 text-left">URL</th>
             <th className="px-4 py-2 text-left">Type</th>
             <th className="px-4 py-2 text-left">Status</th>
-            <th className="px-4 py-2 text-left">Created time</th>
-            <th className="px-4 py-2 text-left">Updated time</th>
+            <th className="px-4 py-2 text-left">Created Time</th>
+            <th className="px-4 py-2 text-left">Updated Time</th>
             <th className="px-4 py-2 text-left">Operation</th>
           </tr>
         </thead>
