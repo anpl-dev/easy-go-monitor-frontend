@@ -4,16 +4,16 @@ import Sidebar from "@/components/ui/Sidebar";
 import { Header } from "@/components/ui/Header";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
-import { SideModal } from "@/components/ui/SideModal";
+// import { SideModal } from "@/components/ui/SideModal";
 import { API_ENDPOINTS } from "@/constants/api";
 import { useUser } from "@/hooks/useUser";
 import { MonitorList } from "@/components/monitor/MonitorList";
 import { MonitorForm } from "@/components/monitor/MonitorForm";
-import { SettingsFormHTTP } from "@/components/monitor/SettingsFormHTTP";
+// import { SettingsFormHTTP } from "@/components/monitor/SettingsFormHTTP";
 import type {
   Monitor,
   MonitorCreateInput,
-  MonitorUpdateInput,
+  // MonitorUpdateInput,
 } from "@/type/monitor";
 import { toast } from "sonner";
 import { sanitizeInput } from "@/lib/utils";
@@ -22,7 +22,7 @@ export default function Monitor() {
   const { user } = useUser();
   const [monitors, setMonitors] = useState<Monitor[]>([]);
   const [open, setOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
+  /*   const [editOpen, setEditOpen] = useState(false);
   const [editingMonitorID, setEditingMonitorID] = useState<string | null>(null);
   const [editData, setEditData] = useState<MonitorUpdateInput>({
     name: "",
@@ -30,7 +30,7 @@ export default function Monitor() {
     type: "HTTP",
     settings: {},
     is_enabled: true,
-  });
+  }); */
   const [newMonitor, setNewMonitor] = useState<MonitorCreateInput>({
     name: "",
     url: "",
@@ -86,7 +86,7 @@ export default function Monitor() {
     }
   };
 
-  const handleUpdateMonitor = async (id: string, data: MonitorUpdateInput) => {
+  /*   const handleUpdateMonitor = async (id: string, data: MonitorUpdateInput) => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -110,9 +110,7 @@ export default function Monitor() {
     } catch {
       toast.error("更新中にエラーが発生しました");
     }
-  };
-
-  const handleDeleteMonitor = async (id: string) => {
+  } */ const handleDeleteMonitor = async (id: string) => {
     const token = localStorage.getItem("token");
     if (!token) return;
     if (!confirm("このモニターを削除してもよろしいですか？")) return;
@@ -182,7 +180,7 @@ export default function Monitor() {
         <div className="space-y-6">
           <MonitorList
             monitors={monitors}
-            onEditClick={(id, m) => {
+            /*  onEditClick={(id, m) => {
               setEditingMonitorID(id);
               setEditData({
                 name: m.name,
@@ -192,7 +190,7 @@ export default function Monitor() {
                 is_enabled: m.is_enabled,
               });
               setEditOpen(true);
-            }}
+            }} */
             onDelete={handleDeleteMonitor}
             onToggle={handleToggleMonitor}
           />
@@ -217,6 +215,7 @@ export default function Monitor() {
           </Modal>
 
           {/* 編集用サイドモーダル */}
+          {/* 
           <SideModal
             open={editOpen}
             title={`モニター編集：${editData.name}`}
@@ -242,7 +241,7 @@ export default function Monitor() {
                 保存
               </Button>
             </div>
-          </SideModal>
+          </SideModal> */}
         </div>
       }
     />

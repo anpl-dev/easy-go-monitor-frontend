@@ -14,14 +14,14 @@ export type Monitor = {
 
 type MonitorListProps = {
   monitors: Monitor[];
-  onEditClick: (id: string, monitor: Monitor) => void;
+  // onEditClick: (id: string, monitor: Monitor) => void;
   onDelete: (id: string) => void;
   onToggle: (id: string, enabled: boolean) => void;
 };
 
 export function MonitorList({
   monitors,
-  onEditClick,
+  // onEditClick,
   onDelete,
   onToggle,
 }: MonitorListProps) {
@@ -100,13 +100,13 @@ export function MonitorList({
                     checked={m.is_enabled}
                     onChange={(v) => onToggle(m.id, v)}
                   />
-                  <Button
+                  {/*                   <Button
                     intent="secondary"
                     size="sm"
                     onClick={() => onEditClick(m.id, m)}
                   >
                     編集
-                  </Button>
+                  </Button> */}
                 </div>
               </td>
               <td className="px-4 py-2 text-right">

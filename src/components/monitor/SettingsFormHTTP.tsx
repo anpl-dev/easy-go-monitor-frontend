@@ -38,15 +38,15 @@ export function SettingsFormHTTP({ value, onChange }: Props) {
         <option value="POST">DELETE(Mock)</option>
       </select>
 
-      <label className={cn(label())}>タイムアウト（秒）</label>
+      {/*       <label className={cn(label())}>タイムアウト（秒）</label>
       <input
         type="number"
         className={cn(input())}
         value={value.timeout ?? 5}
         onChange={(e) => handleChange("timeout", Number(e.target.value))}
-      />
+      /> */}
 
-      <label className={cn(label())}>期待ステータスコード</label>
+      {/*       <label className={cn(label())}>期待ステータスコード (Mock)</label>
       <input
         type="number"
         className={cn(input())}
@@ -54,7 +54,7 @@ export function SettingsFormHTTP({ value, onChange }: Props) {
         onChange={(e) =>
           handleChange("expected_status", Number(e.target.value))
         }
-      />
+      /> */}
     </div>
   );
 }
