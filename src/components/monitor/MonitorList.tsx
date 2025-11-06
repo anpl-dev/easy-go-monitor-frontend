@@ -33,13 +33,13 @@ export function MonitorList({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50 text-gray-700 font-semibold border-b">
           <tr>
-            <th className="px-4 py-2 text-left">Monitor Name</th>
+            <th className="px-4 py-2 text-left">モニター名</th>
             <th className="px-4 py-2 text-left">URL</th>
-            <th className="px-4 py-2 text-left">Type</th>
-            <th className="px-4 py-2 text-left">Status</th>
-            <th className="px-4 py-2 text-left">Created Time</th>
-            <th className="px-4 py-2 text-left">Updated Time</th>
-            <th className="px-4 py-2 text-left">Operation</th>
+            <th className="px-4 py-2 text-left">タイプ</th>
+            <th className="px-4 py-2 text-left">状態</th>
+            <th className="px-4 py-2 text-left">作成時刻</th>
+            <th className="px-4 py-2 text-left">更新時刻</th>
+            <th className="px-4 py-2 text-left">操作</th>
           </tr>
         </thead>
         <tbody>

@@ -79,7 +79,7 @@ export default function Runner() {
         return;
       }
 
-      toast.success("Runnerを作成しました");
+      toast.success("ランナーを作成しました");
       setOpen(false);
       setNewRunner({
         name: "",
@@ -90,7 +90,7 @@ export default function Runner() {
       await fetchRunners();
     } catch (err) {
       console.error(err);
-      toast.error("Runnerの作成に失敗しました");
+      toast.error("ランナーの作成に失敗しました");
     }
   };
 
@@ -145,12 +145,12 @@ export default function Runner() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.message);
 
-      toast.success("Runnerを更新しました");
+      toast.success("ランナーを更新しました");
       setEditingRunner(null);
       fetchRunners();
     } catch (err) {
       console.error(err);
-      toast.error("Runnerの更新に失敗しました");
+      toast.error("ランナーの更新に失敗しました");
     }
   };
 
@@ -165,13 +165,13 @@ export default function Runner() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        toast.success("Runnerを実行しました");
+        toast.success("ランナーを実行しました");
       } else {
         const json = await res.json();
         throw new Error(json.message);
       }
     } catch {
-      toast.error("Runnerの実行に失敗しました");
+      toast.error("ランナーの実行に失敗しました");
     }
   };
 

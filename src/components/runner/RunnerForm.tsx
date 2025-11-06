@@ -28,7 +28,7 @@ export function RunnerForm({
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       {/* Runner名 */}
-      <label className={cn(label())}>Runner名</label>
+      <label className={cn(label())}>ランナー名</label>
       <input
         type="text"
         className={cn(input())}

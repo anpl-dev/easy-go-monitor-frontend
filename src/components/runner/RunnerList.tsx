@@ -30,15 +30,15 @@ export function RunnerList({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50 text-gray-700 font-semibold border-b">
           <tr>
-            <th className={cn(listColumn())}>Runner Name</th>
-            <th className={cn(listColumn())}>Region</th>
-            <th className={cn(listColumn())}>Interval</th>
-            <th className={cn(listColumn())}>Status</th>
-            <th className={cn(listColumn())}>Monitor Name</th>
+            <th className={cn(listColumn())}>ランナー名</th>
+            <th className={cn(listColumn())}>リージョン</th>
+            <th className={cn(listColumn())}>監視間隔</th>
+            <th className={cn(listColumn())}>状態</th>
+            <th className={cn(listColumn())}>モニター名</th>
             <th className={cn(listColumn())}>URL</th>
-            <th className={cn(listColumn())}>Type</th>
-            <th className={cn(listColumn())}>Method</th>
-            <th className={cn(listColumn())}>Operation</th>
+            <th className={cn(listColumn())}>タイプ</th>
+            <th className={cn(listColumn())}>メソッド</th>
+            <th className={cn(listColumn())}>操作</th>
             <th className={cn(listColumn())}></th>
           </tr>
         </thead>
